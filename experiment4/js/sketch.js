@@ -94,11 +94,6 @@ function draw() {
     }
   }
   
-	// push()
-	// 	blendMode(MULTIPLY)
-  //   cacheGraphics.image(capture, 0, 0, canvasContainer.width(), canvasContainer.height());
-	// pop()
-  // cacheGraphics.image(capture, centerHorz-(capture.width/2), centerVert-(capture.height/2), capture.width, capture.height);
 
 }
 
