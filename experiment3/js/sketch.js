@@ -1,30 +1,20 @@
-// sketch.js - purpose and description here
-// Author: Your Name
-// Date:
-
-// Here is how you might set up an OOP p5.js project
-// Note that p5.js looks for a file called sketch.js
-
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
+// sketch.js - prototype underground room generation
+// Author: James Milestone and Jaxon Ruiz
+// Date: 1/23/25
 
 // Globals
 let myInstance;
 let canvasContainer;
+let regenButton = document.getElementById("regen");
+let cleanUpButton = document.getElementById("cleanUp");
+let smoothButton = document.getElementById("smooth");
 var centerHorz, centerVert;
-
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
+let adjust = 0;
+let numRows = 200;
+let numCols = 200;
+var tileSize = 16;
+// let asciiBox = document.getElementById("asciiBox");
+let world;
 
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
@@ -32,7 +22,38 @@ function resizeScreen() {
   console.log("Resizing...");
   resizeCanvas(canvasContainer.width(), canvasContainer.height());
   // redrawCanvas(); // Redraw everything based on new size
+
+  // $("#asciiBox").height(
+  //   $("canvas").height() - parseInt($("#asciiBox").css("padding")) * 2
+  // );
+  // $("#asciiBox").width(
+  //   $("canvas").width() - parseInt($("#asciiBox").css("padding")) * 2
+  // );
 }
+
+function gridToString(grid) {
+  let rows = [];
+  for (let i = 0; i < grid.length; i++) {
+    rows.push(grid[i].join(""));
+  }
+  return rows.join("\n");
+}
+
+function stringToGrid(str) {
+  let grid = [];
+  let lines = str.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    let row = [];
+    let chars = lines[i].split("");
+    for (let j = 0; j < chars.length; j++) {
+      row.push(chars[j]);
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+
+
 
 // setup() function is called once when the program starts
 function setup() {
@@ -40,40 +61,44 @@ function setup() {
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
   canvas.parent("canvas-container");
-  // resize canvas is the page is resized
 
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
 
-  $(window).resize(function() {
+  $(window).resize(function () {
     resizeScreen();
   });
   resizeScreen();
+
+  regenButton.addEventListener('click', ()=>{
+    adjust++
+    world.generateRoundedArea(adjust);
+  })
+
+  cleanUpButton.addEventListener('click', ()=>{
+    world.cleanUp();
+  })
+
+  smoothButton.addEventListener('click', ()=>{
+    world.averageSmooth()
+  })
+
+  world = new World(numCols, numRows);
+  world.grid_to_string()
+  // Drop method is slow and pretty bad for producing what we want
+  // world.genMethodDrop(500, 80000, 100);
+  // asciiBox.value = world.grid_to_string();
+  world.generateRoundedArea()
+  // asciiBox.oninput = function () {
+  //   world.string_to_grid(asciiBox.value);
+  //   console.log("value changed");
+  //   renderWorld(world);
+  // };
 }
 
-// draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
-
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
-
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  world.render();
 }
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
-    // code to run when mouse is pressed
+  // code to run when mouse is pressed
 }
