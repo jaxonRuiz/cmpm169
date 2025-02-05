@@ -48,6 +48,7 @@ function setup() {
   resizeScreen();
 }
 
+let colorOffset = 0;
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
   background(0);    
@@ -55,7 +56,7 @@ function draw() {
   backgroundEffects.image(capture, 0, 0)
 
   frontEffects.image(capture, 0, 0)
-
+  colorOffset += 5;
 	let span = 10
 
   for (let i=0; i<backgroundEffects.width; i+=span) {
@@ -64,14 +65,18 @@ function draw() {
 
       let bk = (pixel[0]+pixel[1]+pixel[2])/3 // average pixel darkness
 
-      fill(pixel[0],pixel[1],pixel[2]);
-      noStroke();  
-      ellipse(i,j, span*map(bk,0,255,span/2, 0))
+      fill(bk);
+      noStroke();
+      let n = noise()
+      d = distance(mouseX, mouseY, i, j);
+      let maxDist = distance(0,0,canvasContainer.width(),canvasContainer.height())
+      ellipse(i,j, map(d, 0, maxDist, span*4, 0))
+
     }
   }
 
 
-  span = 20
+  span = 30
   for(var i=0;i<frontEffects.width;i+=span){
     for(var j=0;j<frontEffects.width;j+=span){
       let pixel = frontEffects.get(i,j)
@@ -79,15 +84,16 @@ function draw() {
       fill(255)
       fill(pixel)
       push()
-      blendMode(DIFFERENCE)
+      // blendMode(DIFFERENCE)
         colorMode(HSB)
-        fill(pixel[0],100,90)
+        let bk = (pixel[0]+pixel[1]+pixel[2])/3
+        let c = (bk + colorOffset) % 255
+        d = distance(mouseX, mouseY, i, j);
+        fill(c,100,90)
         translate(i,j)
-        rotate(pixel[0]/70) 
+        rotate(bk/70) 
         rectMode(CENTER) 
-        rect(1/10,1/10,span*0.3 + pixel[2]/10) // red rectangles
-      
-        
+        rect(d/canvasContainer.width()*50, d/canvasContainer.height()*50, span*0.3 + bk/10)
         fill(0)
         // ellipse(0,0,5) // black dots
       pop()
@@ -100,4 +106,8 @@ function draw() {
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
     // code to run when mouse is pressed
+}
+
+function distance(x1, y1, x2, y2) {
+  return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 }
