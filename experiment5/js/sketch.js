@@ -7,24 +7,10 @@
 
 // Constants - User-servicable parts
 // In a longer project I like to put these in a separate file
-const VALUE1 = 1;
-const VALUE2 = 2;
 
 // Globals
-let myInstance;
 let canvasContainer;
 var centerHorz, centerVert;
-
-class MyClass {
-    constructor(param1, param2) {
-        this.property1 = param1;
-        this.property2 = param2;
-    }
-
-    myMethod() {
-        // code to run when method is called
-    }
-}
 
 function resizeScreen() {
   centerHorz = canvasContainer.width() / 2; // Adjusted for drawing logic
@@ -34,46 +20,79 @@ function resizeScreen() {
   // redrawCanvas(); // Redraw everything based on new size
 }
 
+let buildings = [];
+let canvasWidth = 400;
+let canvasHeight = 400;
+
 // setup() function is called once when the program starts
 function setup() {
   // place our canvas, making it fit our container
   canvasContainer = $("#canvas-container");
-  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
+  let canvas = createCanvas(canvasWidth, canvasHeight, WEBGL);
   canvas.parent("canvas-container");
-  // resize canvas is the page is resized
+  camera(0, -400, 800, 0, 0, 0)
+  debugMode(800);
 
-  // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
+  let temp = new Building(random(-canvasWidth/2, canvasWidth/2), random(-canvasHeight/2, canvasHeight/2), random(20, 100), int(random(3, 10)), random(10, 100));
+  buildings.push(temp);
+  for (let i=0; i<10; i++) {
+    let temp = new Building(random(-canvasWidth/2, canvasWidth/2), random(-canvasHeight/2, canvasHeight/2), random(20, 100), int(random(3, 10)), random(10, 100));
+    if (buildings.some(b => checkCollision(b, temp))) {
+      i--;
+      continue;
+    }
+    buildings.push(temp);
+  }
+  // let step = 50;
+  // for (let i = -canvasWidth/2; i < canvasWidth/2; i += step) {
+  //   for (let j = -canvasHeight/2; j < canvasHeight/2; j += step) {
+  //     sides = int(random(3, 10));
+  //     let dx = i+step/2 + random(-step/2, step/2);
+  //     let dy = j+step/2 + random(-step/2, step/2);
+  //     buildings.push(new Building(dx, dy, random(step/2, step*3/2), sides, random(10, 100)));
+  //   }
+  // }
 
-  $(window).resize(function() {
-    resizeScreen();
-  });
-  resizeScreen();
+}
+
+function addBuilding() {
+  let temp = new Building(random(-canvasWidth/2, canvasWidth/2), random(-canvasHeight/2, canvasHeight/2), random(20, 100), int(random(3, 10)), random(10, 100));
+    if (buildings.some(b => checkCollision(b, temp))) {
+      return;
+    }
+    buildings.push(temp);
 }
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
+  background(200);
+  orbitControl();
+  rectMode(CENTER);
+  rotateX(PI/2);
+  addBuilding();
 
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
+  for (let i = 0; i < buildings.length; i++) {
+    buildings[i].draw();
+  }
 
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
+  // rect(0, 0, 400, 400);
+
+  // center point
+  // push();
+  // fill(255, 0, 0);
+  // rect(0, 0, 5, 5);
+  // pop();
+  
 }
-
+ 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {
     // code to run when mouse is pressed
+}
+
+function checkCollision(a, b) {
+  let distance = dist(a.x, a.y, b.x, b.y);
+  if (distance < a.size/2 + b.size/2) 
+    return true
+  return false;
 }
