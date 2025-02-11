@@ -17,7 +17,7 @@ class Building {
     this.y = y;
     this.sides = sides;
     this.size = size;
-    this.maxLevel = 2;
+    this.maxLevel = 6;
 
     // set up base shape (polygon)
     this.rotationFactor = TWO_PI / sides;
@@ -37,8 +37,11 @@ class Building {
     // this.shape = endGeometry();
   }
 
-  draw() {
+  draw(distance) {
+
     push();
+    colorMode(HSB);
+    fill(map(distance, 0, 1500, 360, 0), 100, map(this.level, 0, this.maxLevel, 20, 100));
     translate(this.x, this.y, 0);
     if (this.shape) model(this.shape);
 
@@ -85,12 +88,12 @@ class Building {
       endShape(CLOSE);
     }
 
-    // bottom face
-    beginShape();
-    for (let i=0; i < this.basePoints[this.level].length; i++) {
-      vertex(this.basePoints[this.level][i].x, this.basePoints[this.level][i].y, this.height*this.level);
-    }
-    endShape(CLOSE);
+    // // bottom face
+    // beginShape();
+    // for (let i=0; i < this.basePoints[this.level].length; i++) {
+    //   vertex(this.basePoints[this.level][i].x, this.basePoints[this.level][i].y, this.height*this.level);
+    // }
+    // endShape(CLOSE);
 
     // top face
     beginShape();

@@ -23,6 +23,7 @@ function resizeScreen() {
 let buildings = [];
 let canvasWidth = 400;
 let canvasHeight = 400;
+let cam;
 
 // setup() function is called once when the program starts
 function setup() {
@@ -30,33 +31,29 @@ function setup() {
   canvasContainer = $("#canvas-container");
   let canvas = createCanvas(canvasWidth, canvasHeight, WEBGL);
   canvas.parent("canvas-container");
-  camera(0, -400, 800, 0, 0, 0)
-  debugMode(800);
+  cam = createCamera();
+  cam.setPosition(0, -600, 1200);
+  cam.lookAt(0, -100, 0);
+  // camera(0, -600, 800, 0, 0, 0)
+  // debugMode(800);
 
-  let temp = new Building(random(-canvasWidth/2, canvasWidth/2), random(-canvasHeight/2, canvasHeight/2), random(20, 100), int(random(3, 10)), random(10, 100));
+  let temp = new Building(random(-canvasWidth/2, canvasWidth/2), random(-canvasHeight/2, canvasHeight/2), random(20, 100), int(random(3, 8)), random(10, 100));
   buildings.push(temp);
   for (let i=0; i<10; i++) {
-    let temp = new Building(random(-canvasWidth/2, canvasWidth/2), random(-canvasHeight/2, canvasHeight/2), random(20, 100), int(random(3, 10)), random(10, 100));
+    let temp = new Building(random(-canvasWidth/2, canvasWidth/2), random(-canvasHeight/2, canvasHeight/2), random(50, 100), int(random(3, 8)), random(10, 50));
     if (buildings.some(b => checkCollision(b, temp))) {
       i--;
       continue;
     }
     buildings.push(temp);
   }
-  // let step = 50;
-  // for (let i = -canvasWidth/2; i < canvasWidth/2; i += step) {
-  //   for (let j = -canvasHeight/2; j < canvasHeight/2; j += step) {
-  //     sides = int(random(3, 10));
-  //     let dx = i+step/2 + random(-step/2, step/2);
-  //     let dy = j+step/2 + random(-step/2, step/2);
-  //     buildings.push(new Building(dx, dy, random(step/2, step*3/2), sides, random(10, 100)));
-  //   }
-  // }
 
 }
 
+let validWidth = canvasWidth/2;
+let validHeight = canvasHeight/2;
 function addBuilding() {
-  let temp = new Building(random(-canvasWidth/2, canvasWidth/2), random(-canvasHeight/2, canvasHeight/2), random(20, 100), int(random(3, 10)), random(10, 100));
+  let temp = new Building(random(-validWidth, validWidth), random(-validHeight, validHeight), random(20, 100), int(random(3, 8)), random(10, 30));
     if (buildings.some(b => checkCollision(b, temp))) {
       return;
     }
@@ -65,24 +62,22 @@ function addBuilding() {
 
 // draw() function is called repeatedly, it's the main animation loop
 function draw() {
-  background(200);
+  background(156, 230, 255);
   orbitControl();
   rectMode(CENTER);
   rotateX(PI/2);
   addBuilding();
-
+  if (validWidth < canvasWidth) validWidth += 1;
+  if (validHeight < canvasHeight) validHeight += 1;
   for (let i = 0; i < buildings.length; i++) {
-    buildings[i].draw();
+    let distance = dist(cam.eyeX, cam.eyeY, buildings[i].x, buildings[i].y);
+    buildings[i].draw(distance);
   }
 
-  // rect(0, 0, 400, 400);
-
-  // center point
-  // push();
-  // fill(255, 0, 0);
-  // rect(0, 0, 5, 5);
-  // pop();
-  
+  push();
+  fill(100);
+  rect(0, 0, canvasWidth*2.2, canvasHeight*2.2);
+  pop();  
 }
  
 // mousePressed() function is called once after every time a mouse button is pressed
