@@ -38,12 +38,19 @@ function resizeScreen() {
 function setup() {
   // place our canvas, making it fit our container
   canvasContainer = $("#canvas-container");
-  let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
-  canvas.parent("canvas-container");
+  // let canvas = createCanvas(canvasContainer.width(), canvasContainer.height());
+  // canvas.parent("canvas-container");
   // resize canvas is the page is resized
-
+  let textBox = document.getElementById("textBox");
   // create an instance of the class
-  myInstance = new MyClass("VALUE1", "VALUE2");
+  civ = new Civilization();
+
+  textBox.innerHTML = civ.generateCivilization();
+  let regenButton = document.getElementById("regenButton");
+  regenButton.onclick = function() {
+    console.log("Regenerating...");
+    textBox.innerHTML = civ.generateCivilization();
+  }
 
   $(window).resize(function() {
     resizeScreen();
@@ -52,26 +59,11 @@ function setup() {
 }
 
 // draw() function is called repeatedly, it's the main animation loop
-function draw() {
-  background(220);    
-  // call a method on the instance
-  myInstance.myMethod();
-
-  // Set up rotation for the rectangle
-  push(); // Save the current drawing context
-  translate(centerHorz, centerVert); // Move the origin to the rectangle's center
-  rotate(frameCount / 100.0); // Rotate by frameCount to animate the rotation
-  fill(234, 31, 81);
-  noStroke();
-  rect(-125, -125, 250, 250); // Draw the rectangle centered on the new origin
-  pop(); // Restore the original drawing context
-
-  // The text is not affected by the translate and rotate
-  fill(255);
-  textStyle(BOLD);
-  textSize(140);
-  text("p5*", centerHorz - 105, centerVert + 40);
-}
+// function draw() {
+//   background(220);    
+  
+//   text(civ.generateCivilization(), centerHorz, centerVert);
+// }
 
 // mousePressed() function is called once after every time a mouse button is pressed
 function mousePressed() {

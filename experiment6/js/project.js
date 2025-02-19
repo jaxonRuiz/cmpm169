@@ -2,23 +2,69 @@
 // Author: Your Name
 // Date:
 
-// NOTE: This is how we might start a basic JavaaScript OOP project
 
-// Constants - User-servicable parts
-// In a longer project I like to put these in a separate file
 
-// define a class
-class MyProjectClass {
+class Civilization {
+  ethical_ideology = ["spirituality",
+    "materialism",
+    "egalitarianism",
+    "heirarchical",
+    "militarism", ,
+    "pacifist",
+    "diversity",
+    "hegemony",
+    "freedom",
+    "control",
+    "conservitism",
+    "progressivism",
+    "isolationist",
+    "expansionist"]
+    governing_ideology = ["parliamentarian",
+      "socialist",
+      "libertarian",
+      "fascist",
+      "technocratic",
+      "nationalism",
+      "confederate",
+      "corporatist",
+      "feudal",
+      "anarchal",
+      "republican",
+      "presidential",
+      "theocratic"]
+    succession = [
+      "democracy",
+      "oligarchy",
+      "dictatorship",
+      "imperial state",
+      "meritocracy",
+      "monarchy",
+      "mandate of heaven"
+    ]
+    economic_system = ["mercantile",
+      "communal",
+      "capitalist",
+      "social welfare",
+      "plunder",
+      "agrarian",
+      "controlled economy",
+      "laissez faire",
+      "colonial"
+    ]
+    
   // constructor function
-  constructor(param1, param2) {
-    // set properties using 'this' keyword
-    this.property1 = param1;
-    this.property2 = param2;
+  constructor() {
+
   }
   
-  // define a method
-  myMethod() {
-    // code to run when method is called
+  generateCivilization() {
+    let civilization = {
+      "ethical_ideology": this.ethical_ideology[Math.floor(Math.random() * this.ethical_ideology.length)],
+      "governing_ideology": this.governing_ideology[Math.floor(Math.random() * this.governing_ideology.length)],
+      "succession": this.succession[Math.floor(Math.random() * this.succession.length)],
+      "economic_system": this.economic_system[Math.floor(Math.random() * this.economic_system.length)]
+    }
+    return `This is a ${civilization.governing_ideology} ${civilization.succession} which values ${civilization.ethical_ideology} and features a ${civilization.economic_system} economic system.`;
   }
 }
 
